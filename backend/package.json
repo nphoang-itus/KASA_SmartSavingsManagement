@@ -14,7 +14,7 @@
   "description": "",
   "jest": {
     "testMatch": [
-      "<rootDir>/tests/services/typeSaving.test.js"
+      "<rootDir>/tests/services/savingBook.test.js"
     ],
     "testEnvironment": "node"
   },
