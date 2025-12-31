@@ -1,0 +1,1 @@
+TRUNCATE TABLE transaction, savingbook, customer, useraccount, employee RESTART IDENTITY CASCADE;
