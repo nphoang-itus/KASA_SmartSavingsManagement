@@ -206,7 +206,7 @@ describe("SavingBookService - Unit Tests", () => {
 
       mockCustomerRepository.findByCitizenID.mockResolvedValue(mockCustomer);
       mockTypeSavingRepository.findById.mockResolvedValue(mockTypeSaving);
-      
+
       // ✅ Mock create to prevent execution reaching line 39
       // The validation should happen before create is called
       mockSavingBookRepository.create.mockImplementation(() => {
@@ -214,7 +214,7 @@ describe("SavingBookService - Unit Tests", () => {
       });
 
       await expect(savingBookService.addSavingBook(inputData)).rejects.toThrow(
-        /Deposit amount must be at least|minimumdeposit/i
+        /Minimum deposit amount/i
       );
     });
 
@@ -274,7 +274,7 @@ describe("SavingBookService - Unit Tests", () => {
 
       mockCustomerRepository.findByCitizenID.mockResolvedValue(mockCustomer);
       mockTypeSavingRepository.findById.mockResolvedValue(mockTypeSaving);
-      
+
       // Simulate DB error
       mockSavingBookRepository.create.mockRejectedValue(
         new Error("Database connection failed")
@@ -369,11 +369,17 @@ describe("SavingBookService - Unit Tests", () => {
         mockResults
       );
 
-      const result = await savingBookService.searchSavingBook(keyword, 10, 1);
-
-      expect(mockSavingBookRepository.findByCustomerCitizenID).toHaveBeenCalledWith(
-        keyword
+      const result = await savingBookService.searchSavingBook(
+        keyword,
+        undefined, // typeId
+        undefined, // status
+        10, // pageSize
+        1 // pageNumber
       );
+
+      expect(
+        mockSavingBookRepository.findByCustomerCitizenID
+      ).toHaveBeenCalledWith(keyword);
       expect(result.data.length).toBeGreaterThan(0);
     });
 
@@ -385,14 +391,18 @@ describe("SavingBookService - Unit Tests", () => {
 
       const result = await savingBookService.searchSavingBook(keyword, 10, 1);
 
-      expect(mockSavingBookRepository.findByBookID).toHaveBeenCalledWith(keyword);
+      expect(mockSavingBookRepository.findByBookID).toHaveBeenCalledWith(
+        keyword
+      );
     });
 
     it("should search by customer name when keyword is letters", async () => {
       const keyword = "Nguyen Van A";
       const mockResults = [createMockSavingBook({ bookid: 1 })];
 
-      mockSavingBookRepository.findByCustomerName.mockResolvedValue(mockResults);
+      mockSavingBookRepository.findByCustomerName.mockResolvedValue(
+        mockResults
+      );
 
       const result = await savingBookService.searchSavingBook(keyword, 10, 1);
 
@@ -409,7 +419,13 @@ describe("SavingBookService - Unit Tests", () => {
 
       mockSavingBookRepository.findAll.mockResolvedValue(mockResults);
 
-      const result = await savingBookService.searchSavingBook("", 10, 1);
+      const result = await savingBookService.searchSavingBook(
+        "",
+        undefined, // typeId
+        undefined, // status
+        10, // pageSize
+        1 // pageNumber
+      );
 
       expect(mockSavingBookRepository.findAll).toHaveBeenCalled();
       expect(result.total).toBe(2);
@@ -451,7 +467,10 @@ describe("SavingBookService - Unit Tests", () => {
         status: "Close",
       });
 
-      const result = await savingBookService.closeSavingBook(bookID, employeeID);
+      const result = await savingBookService.closeSavingBook(
+        bookID,
+        employeeID
+      );
 
       expect(result).toBeDefined();
       expect(mockSavingBookRepository.update).toHaveBeenCalledWith(
@@ -485,4 +504,3 @@ describe("SavingBookService - Unit Tests", () => {
     });
   });
 });
-

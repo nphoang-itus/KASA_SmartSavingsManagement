@@ -15,9 +15,12 @@ const mockSavingBookService = {
   closeSavingBook: jest.fn(),
 };
 
-jest.unstable_mockModule("@src/services/SavingBook/savingBook.service.js", () => ({
-  savingBookService: mockSavingBookService,
-}));
+jest.unstable_mockModule(
+  "@src/services/SavingBook/savingBook.service.js",
+  () => ({
+    savingBookService: mockSavingBookService,
+  })
+);
 
 const {
   addSavingBook,
@@ -26,7 +29,9 @@ const {
   getSavingBookById,
   searchSavingBook,
   closeSavingBook,
-} = await import("../../../src/controllers/SavingBook/savingBook.controller.js");
+} = await import(
+  "../../../src/controllers/SavingBook/savingBook.controller.js"
+);
 
 describe("SavingBookController - Unit Tests", () => {
   beforeEach(() => {
@@ -67,7 +72,9 @@ describe("SavingBookController - Unit Tests", () => {
 
       await addSavingBook(req, res);
 
-      expect(mockSavingBookService.addSavingBook).toHaveBeenCalledWith(req.body);
+      expect(mockSavingBookService.addSavingBook).toHaveBeenCalledWith(
+        req.body
+      );
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith({
         message: "Saving book added successfully",
@@ -202,6 +209,8 @@ describe("SavingBookController - Unit Tests", () => {
 
       expect(mockSavingBookService.searchSavingBook).toHaveBeenCalledWith(
         "NONEXISTENT123",
+        undefined,
+        undefined,
         10,
         1
       );
@@ -393,4 +402,3 @@ describe("SavingBookController - Unit Tests", () => {
     });
   });
 });
-
